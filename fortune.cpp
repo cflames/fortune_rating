@@ -5,31 +5,35 @@
 #include <iterator>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 #include <iostream>
 
 #include "fortune.h"
-#include "string_tools.h"
 
 namespace FortuneRating
 {
 void Fortune::init()
 {
     // init wordcounter
+    pWordCounter_ = std::make_unique<MapWordCounter>();
     pWordCounter_->init();
     std::cout << "Fortune has been initilized" << std::endl;
 }
 
 int Fortune::price(const std::string& adage)
 {
-    if ( pWordCounter_ == NULL )
-    {
-        std::cout << "Fortune has not been initilized" << std::endl;
-        return -1;
-    }
-    // tokenized the adage
+    // remove punct
+    std::string strNoPunct;
+    std::remove_copy_if(adage.begin(), adage.end(),            
+                        std::back_inserter(strNoPunct), //Store output           
+                        std::ptr_fun<int, int>(&std::ispunct)  
+                       );
+    // to lower case
+    std::transform(strNoPunct.begin(), strNoPunct.end(), strNoPunct.begin(), ::tolower);
 
-    std::stringstream streamString(adage);
+    // tokenized the adage
+    std::stringstream streamString(strNoPunct);
 
     // use stream iterators to copy the stream to the vector as whitespace separated strings
     std::istream_iterator<std::string> it(streamString);
@@ -80,6 +84,6 @@ int Fortune::price(const std::string& adage)
         pWordCounter_->updateCounter(word.first, word.second);
     }
     std::cout << "adage price: " << price << std::endl;
-    return (int)price;
+    return static_cast<int>(price);
 }
 }

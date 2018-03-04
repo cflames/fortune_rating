@@ -1,5 +1,4 @@
 
-#include "string_tools.h"
 #include "fortune.h"
 
 #include "word_counter.h"
@@ -9,6 +8,8 @@
 #include <iostream>
 #include <string>
 #include <cassert>
+#include <sstream> 
+
 
 void test_word_counter()
 {
@@ -38,7 +39,7 @@ void test_word_counter()
 
 void test_fortune()
 {
-    FortuneRating::Fortune fortune = FortuneRating::Fortune();
+    FortuneRating::Fortune fortune;
     fortune.init();
 
     std::string test("test test1 test2 test");
@@ -51,6 +52,32 @@ void test_fortune()
     // (100 - 50) /100 + (100 - 25)/100 + (100 - 25)/100
     assert( price == 2);
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::string test2("Test, tesT1! test2. test ");
+    // test percentage is 50%, others are 25%
+    price = fortune.price(test);
+    assert( price == 2);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::ostringstream stringStream;
+    for ( int i=0; i < 100; i++)
+    {
+        stringStream << "test" << i << " ";
+    }
+    std::string copyOfStr = stringStream.str();
+    price = fortune.price(copyOfStr);
+    // 98*2 SEK + 0.75 + 0.75
+    assert( price == 197);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::string test3("test100");
+    price = fortune.price(test3);
+    assert( price == 2);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::string test4("test10");
+    price = fortune.price(test4);
+    assert( price == 2);
 }
 
 int main(int argc, const char *argv[])

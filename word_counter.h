@@ -14,7 +14,7 @@ namespace FortuneRating
 class UpdateCounterEvent
 {
 public:
-    explicit UpdateCounterEvent(int counter, std::string word):
+    UpdateCounterEvent(int counter, std::string word):
         counter_(counter), word_(word) {};
     int getCounter() const { return counter_; };
     std::string getWord() const { return word_; };
@@ -33,8 +33,7 @@ typedef std::map<std::string, value_t> atomic_map_t;
 class MapWordCounter
 {
 public:
-    explicit MapWordCounter(): total_word_count_(0) {};
-
+    MapWordCounter(): total_word_count_(0), isRunning_(false) {};
     /*
     get counter for a word.
 
@@ -59,8 +58,10 @@ public:
 
     // init word counter, run start with main event loop
     void init();
+
     // stop main loop thread
     void stop();
+
 private:
     // main loop for this word counter to handle update event
     void event_loop(MapWordCounter* object);
@@ -68,8 +69,8 @@ private:
 private:
     value_t total_word_count_; // the number of words in this data store in total
     atomic_map_t words_; // the map to save words and counter
-    UpdateQueue<UpdateCounterEvent*> eventQueue_; // the update event queue
-    bool isRunning_; // flag to stop thread
+    UpdateQueue<std::shared_ptr<UpdateCounterEvent>> eventQueue_; // the update event queue
+    std::atomic<bool>  isRunning_; // flag to stop thread
     std::thread thread_;
 };
 

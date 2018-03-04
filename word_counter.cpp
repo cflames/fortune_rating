@@ -19,8 +19,7 @@ int MapWordCounter::getCounter(const std::string& word) const
 
 void MapWordCounter::updateCounter(const std::string& word, int count)
 {
-    UpdateCounterEvent *event = new UpdateCounterEvent(count, word);
-    eventQueue_.add(event);
+    eventQueue_.add(std::make_shared<UpdateCounterEvent>(UpdateCounterEvent(count, word)));
 }
 
 void MapWordCounter::event_loop(MapWordCounter* object)
@@ -30,7 +29,7 @@ void MapWordCounter::event_loop(MapWordCounter* object)
         {
             continue;
         }
-        UpdateCounterEvent* event = eventQueue_.remove();
+        std::shared_ptr<UpdateCounterEvent> event = eventQueue_.remove();
         //std::cout << "get a new event " << event->getCounter() << std::endl;
         total_word_count_ = total_word_count_ + event->getCounter();
 
@@ -41,14 +40,11 @@ void MapWordCounter::event_loop(MapWordCounter* object)
         {
             words_.emplace(std::piecewise_construct,
                 std::forward_as_tuple(event->getWord()), std::forward_as_tuple(event->getCounter()));
-            delete event;    
             continue;
         }
         //std::cout << "this is old word" << event->getWord() << std::endl;
         // set new counter
         it->second = it->second + event->getCounter();
-
-        delete event;
     }
     
 }

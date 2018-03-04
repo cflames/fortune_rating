@@ -11,8 +11,8 @@ template <typename T> class UpdateQueue
 public:
     UpdateQueue() 
     {
-        pthread_mutex_init(&mutex_, NULL);
-        pthread_cond_init(&condv_, NULL);
+        pthread_mutex_init(&mutex_, nullptr);
+        pthread_cond_init(&condv_, nullptr);
     }
 
     ~UpdateQueue() 

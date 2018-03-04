@@ -12,7 +12,9 @@ namespace FortuneRating
 class Fortune
 {
 public:
-    Fortune() {  pWordCounter_ = new MapWordCounter(); };
+    explicit Fortune() {};
+    Fortune(const Fortune&) = delete;
+    Fortune& operator=(const Fortune&) = delete;
 
     /* Init resource used by Fortune */
     void init();
@@ -28,14 +30,10 @@ public:
     */        
     int  price(const std::string& adage);
 
-    virtual ~Fortune() 
-    { 
-        pWordCounter_->stop(); 
-        delete pWordCounter_; 
-    };
+    ~Fortune() { pWordCounter_->stop(); };
 
 private:
-    MapWordCounter* pWordCounter_; // pointer to wordcounter
+    std::unique_ptr<MapWordCounter> pWordCounter_; // smart pointer to wordcounter
 };
 
 }
