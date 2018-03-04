@@ -1,7 +1,6 @@
 #ifndef FORTUNE_H_
 #define FORTUNE_H_
 
-#include <map>
 #include "word_counter.h"
 
 namespace FortuneRating
@@ -13,8 +12,6 @@ class Fortune
 {
 public:
     explicit Fortune() {};
-    Fortune(const Fortune&) = delete;
-    Fortune& operator=(const Fortune&) = delete;
 
     /* Init resource used by Fortune */
     void init();
