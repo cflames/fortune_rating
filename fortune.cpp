@@ -61,7 +61,7 @@ int Fortune::price(const std::string& adage)
     
         if ( totalCount > 0 )
         {
-            percentage = (float)count / (float)totalCount;
+            percentage = static_cast<float>(count) / static_cast<float>(totalCount);
         }
 
         // if u < 0.05, price is 2 SEK
